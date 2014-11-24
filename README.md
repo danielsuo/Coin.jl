@@ -6,7 +6,19 @@ Coin.jl
 A (self-educational, incomplete, and likely incorrect) library for working with Bitcoin written in Julia.
 
 # To Do
-- Set up docs (https://readthedocs.org)
+First, we're going to implement a thin-client wallet.
+
+## Public key distribution
+- TBD
+
+## Signing program
+- TBD
+
+## Network operations
+- TBD
+
+## Utilities
+- TBD
 
 # Reference
 - Bitcoin: [https://github.com/bitcoin/bitcoin](https://github.com/bitcoin/bitcoin)
@@ -14,6 +26,13 @@ A (self-educational, incomplete, and likely incorrect) library for working with 
 - Toshi: [https://github.com/coinbase/toshi](https://github.com/coinbase/toshi)
 - Bitcoin-ruby: [https://github.com/lian/bitcoin-ruby](https://github.com/lian/bitcoin-ruby)
 - Bitcoinjs: [https://github.com/bitcoinjs/bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)
+
+# Articles
+- [Developer guide](https://bitcoin.org/en/developer-guide)
+- [Developer reference](https://bitcoin.org/en/developer-reference)
+- [Develoepr examples](https://bitcoin.org/en/developer-examples)
+- [http://www.righto.com/2014/02/bitcoins-hard-way-using-raw-bitcoin.html](http://www.righto.com/2014/02/bitcoins-hard-way-using-raw-bitcoin.html)
+- [http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html](http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html)
 
 # Eventually
 - Dockerize
