@@ -1,5 +1,6 @@
-juliacoin
+Coin.jl
 =========
+[![Coverage Status](https://coveralls.io/repos/danielsuo/Coin.jl/badge.png)](https://coveralls.io/r/danielsuo/Coin.jl)
 
 A (self-educational, incomplete, and likely incorrect) library for working with Bitcoin written in Julia.
 
