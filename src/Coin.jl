@@ -1,5 +1,9 @@
 module Coin
 
-# package code goes here
+export test
 
-end # module
+function test(x,y)
+  x + y
+end
+
+end
