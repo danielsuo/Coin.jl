@@ -73,15 +73,20 @@ const k = [0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f
 ##
 ##############################################################################
 
-macro ROTRIGHT(num, shift, intsize) return (num >>> shift) | (num << (intsize - shift)) end
+# Hard-coding for 32-bit ints
+ROTRIGHT(num, shift) = (num >>> shift) | (num << (32 - shift))
+ROTLEFT(num, shift) = (num << shift) | (num >>> (32 - shift))
 
-function ROTRIGHT(num, shift, intsize)
-  println(bin(num >>> shift))
-  println(bin(num << (intsize - shift)))
-end
+CH(e, f, g) = ((e & f) $ (~e & g))
+MA(a, b, c) = (a & b) $ (a & c) $ (b & c)
 
-macro CH(e, f, g) return (((e) & (f)) $ (~(e) & (g))) end
-macro MA(a, b, c) return ((a) & (b)) $ ((a) & (c)) $ ((b) & (c)) end
+E0(x) = (ROTRIGHT(x, 2) $ ROTRIGHT(x, 13) $ ROTRIGHT(x, 22))
+E1(x) = (ROTRIGHT(x, 6) $ ROTRIGHT(x, 11) $ ROTRIGHT(x, 25))
+
+S0(x) = (ROTRIGHT(x, 7) $ ROTRIGHT(x, 18) $ (x >>> 3))
+S1(x) = (ROTRIGHT(x, 17) $ ROTRIGHT(x, 19) $ (x >>> 10))
+
+MOD32(op, args...) = reduce((x, y) -> uint32(apply(op, x, y)) , args)
 
 # get_chunks takes a message and returns an array of chunks, which themselves
 # are arrays of words (32 bits each)
@@ -167,24 +172,50 @@ function sha256(msg)
   #   return first_32_bits
   # end
 
-  state = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a
+  state = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
            0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]
 
   chunks = get_chunks(msg)
 
   for j = 1:size(chunks)[2]
-    schedule = zeros(Uint32, WORDS_PER_SCHEDULE)
+    m = zeros(Uint32, WORDS_PER_SCHEDULE)
     for i = 1:WORDS_PER_CHUNK
-      schedule[i] = chunks[i][j]
+      m[i] = chunks[i][j]
     end
     for i = WORDS_PER_CHUNK + 1:WORDS_PER_SCHEDULE
+      s0 = S0(chunks[i-15][j])
+      s1 = S1(chunks[i-2][j])
 
+      # ERRROR?: when is mod taken?
+      m[i] = MOD32(+, m[i-16], s0, m[i-7], s1)
     end
+
+    a, b, c, d, e, f, g, h = state
+
+    for i = 1:WORDS_PER_SCHEDULE
+      t1 = MOD32(+, h, E1(e), CH(e, f, g), k[i], m[i])
+      t2 = MOD32(+, E0(a), MA(a, b, c))
+      h = g;
+      g = f;
+      f = e;
+      e = MOD32(+, d, t1)
+      d = c;
+      c = b;
+      b = a;
+      a = MOD32(+, t1, t2)
+    end
+
+    state[1] = MOD32(+, state[1], a)
+    state[2] = MOD32(+, state[2], b)
+    state[3] = MOD32(+, state[3], c)
+    state[4] = MOD32(+, state[4], d)
+    state[5] = MOD32(+, state[5], e)
+    state[6] = MOD32(+, state[6], f)
+    state[7] = MOD32(+, state[7], g)
+    state[8] = MOD32(+, state[8], h)
+
   end
-end
 
-# TODO: Refactor to process one 64 byte (512 bit) chunk at a time
-function sha256(msg)
-
+  return reduce((x, y) -> string(x, y), map(hex, state))
 end
 
