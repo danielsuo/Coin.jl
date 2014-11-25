@@ -8,6 +8,8 @@ A (self-educational, incomplete, and likely incorrect) library for working with 
 # To Do
 First, we're going to implement a thin-client wallet.
 
+- Should consider creating object types (e.g., addresses with metadata; wallets; etc)
+
 ## Public key distribution
 - Base58 encoding / decoding [ref](https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp)
 - RIPEMD-160 [ref](https://github.com/bitcoin/bitcoin/blob/master/src/crypto/ripemd160.cpp)

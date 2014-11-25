@@ -23,5 +23,7 @@ module Coin
 ##############################################################################
 
 include(joinpath("Crypto", "Crypto.jl"))
+include(joinpath("Wallet", "Wallet.jl"))
+include(joinpath("Util", "Util.jl"))
 
 end # module Coin
