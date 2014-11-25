@@ -9,7 +9,10 @@ A (self-educational, incomplete, and likely incorrect) library for working with 
 First, we're going to implement a thin-client wallet.
 
 ## Public key distribution
-- TBD
+- Base58 encoding / decoding [ref](https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp)
+- RIPEMD-160 [ref](https://github.com/bitcoin/bitcoin/blob/master/src/crypto/ripemd160.cpp)
+- Elliptic Curve DSA
+- Wallet Interchange Format
 
 ## Signing program
 - TBD

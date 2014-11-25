@@ -211,7 +211,7 @@ function sha256(msg::ASCIIString)
   end
 
   # Assemble digest and return
-  return reduce((x, y) -> string(x, y), map(x -> hex(uint32(x)), state))
+  return reduce((x, y) -> string(x, y), map(x -> lpad(hex(uint32(x)), 8, "0"), state))
 end
 
 end # module SHA256
