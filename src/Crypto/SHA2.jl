@@ -147,7 +147,27 @@ function sha256_transform!(state, block)
   return
 end
 
-function sha256(msg::ASCIIString)
+function sha256(msg::ASCIIString; is_hex=true)
+
+  if is_hex
+    len = int(length(msg) / 2)
+    result = zeros(Uint8, len)
+    for i = 1:len
+      result[i] = uint8(parseint(msg[2 * i - 1: 2 * i],16))
+    end
+    msg = result
+  else
+    # We only want byte array literal (i.e., character array)
+    msg = msg.data
+  end
+
+  # Get original length and bit lengths
+  len = length(msg)
+  bitlen = len * 8
+
+  # Append the bit '1' to the message.
+  append!(msg, [0x80])
+
   # First 32 bits of the fractional parts of the square roots of the first 8
   # primes, 2 through 19. A sample generation function below:
   #
@@ -160,16 +180,6 @@ function sha256(msg::ASCIIString)
 
   state = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
            0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]
-
-  # We only want byte array literal (i.e., character array)
-  msg = msg.data
-
-  # Get original length and bit lengths
-  len = length(msg)
-  bitlen = len * 8
-
-  # Append the bit '1' to the message.
-  append!(msg, [0x80])
 
   # Divide up message into blocks of BLOCK_SIZE = 512 bits
   # and run through transformation

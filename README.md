@@ -11,8 +11,8 @@ First, we're going to implement a thin-client wallet.
 ## Public key distribution
 - Base58 encoding / decoding [ref](https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp)
 - RIPEMD-160 [ref](https://github.com/bitcoin/bitcoin/blob/master/src/crypto/ripemd160.cpp)
-- Elliptic Curve DSA
-- Wallet Interchange Format
+- Elliptic Curve DSA [ref](https://github.com/bitcoin/secp256k1/blob/master/src/secp256k1.c)
+- Wallet Interchange Format [ref](https://en.bitcoin.it/wiki/WIF)
 
 ## Signing program
 - TBD
