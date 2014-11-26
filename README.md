@@ -11,7 +11,8 @@ First, we're going to implement a thin-client wallet.
 - Should consider creating object types (e.g., addresses with metadata; wallets; etc)
 
 ## Public key distribution
-- RIPEMD-160 [ref](https://github.com/bitcoin/bitcoin/blob/master/src/crypto/ripemd160.cpp)
+- ~~RIPEMD-160 [ref](https://github.com/bitcoin/bitcoin/blob/master/src/crypto/ripemd160.cpp)~~
+  - Clean up [ref](https://maemo.gitorious.org/maemo-pkg/python-crypto/source/8651b0eace17916fe7ba14923dbe4054f255ec2a:lib/Crypto/Hash/RIPEMD160.py)
 - Elliptic Curve DSA [ref](https://github.com/bitcoin/secp256k1/blob/master/src/secp256k1.c)
 - ~~Wallet Interchange Format [ref](https://en.bitcoin.it/wiki/WIF)~~
 - ~~Base58 encoding / decoding [ref](https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp)~~

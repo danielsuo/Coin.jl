@@ -19,6 +19,9 @@ using Base.Test
 @test Coin.Crypto.SHA2.sha256("800c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d") == "8147786c4d15106333bf278d71dadaf1079ef2d2440a4dde37d747ded5403592"
 @test Coin.Crypto.SHA2.sha256("8147786c4d15106333bf278d71dadaf1079ef2d2440a4dde37d747ded5403592") == "507a5b8dfed0fc6fe8801743720cedec06aa5c6fca72b07c49964492fb98a714"
 
+# RIPEMD tests
+@test Coin.Crypto.RIPEMD.ripemd160("asdf", is_hex=false) == "0ef2aed6346def670a8019e4ea42cf4c76018139"
+
 ##############################################################################
 ##
 ## Util tests
