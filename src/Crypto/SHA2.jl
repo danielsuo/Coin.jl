@@ -101,7 +101,7 @@ E1(x) = (ROTRIGHT(x, 6) $ ROTRIGHT(x, 11) $ ROTRIGHT(x, 25))
 S0(x) = (ROTRIGHT(x, 7) $ ROTRIGHT(x, 18) $ (x >>> 3))
 S1(x) = (ROTRIGHT(x, 17) $ ROTRIGHT(x, 19) $ (x >>> 10))
 
-function sha256_transform!(state, block)
+function transform!(state, block)
 
   # Pre-allocate the message schedule array (64 8-bit words)
   m = zeros(Uint32, CHUNKS_PER_SCHEDULE)
@@ -184,7 +184,7 @@ function sha256(msg::ASCIIString; is_hex=true)
   # Divide up message into blocks of BLOCK_SIZE = 512 bits
   # and run through transformation
   while length(msg) >= BLOCK_SIZE
-    sha256_transform!(state, msg[1:BLOCK_SIZE])
+    transform!(state, msg[1:BLOCK_SIZE])
     msg = msg[BLOCK_SIZE + 1:end]
   end
 
@@ -198,7 +198,7 @@ function sha256(msg::ASCIIString; is_hex=true)
     # resulting message length (modulo 512 in bits) is 448.
     if length(msg) > BLOCK_SIZE - 8
       msg = append!(msg, zeros(Uint8, BLOCK_SIZE - rem))
-      sha256_transform!(state, msg)
+      transform!(state, msg)
       msg = zeros(Uint8, BLOCK_SIZE)
     else
       msg = append!(msg, zeros(Uint8, BLOCK_SIZE - rem))
@@ -217,7 +217,7 @@ function sha256(msg::ASCIIString; is_hex=true)
     msg[64] = bitlen & 0xff
 
     # Process the last block
-    sha256_transform!(state, msg)
+    transform!(state, msg)
   end
 
   # Assemble digest and return

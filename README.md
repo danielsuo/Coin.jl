@@ -11,11 +11,15 @@ First, we're going to implement a thin-client wallet.
 - Should consider creating object types (e.g., addresses with metadata; wallets; etc)
 
 ## Public key distribution
-- Base58 encoding / decoding [ref](https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp)
 - RIPEMD-160 [ref](https://github.com/bitcoin/bitcoin/blob/master/src/crypto/ripemd160.cpp)
 - Elliptic Curve DSA [ref](https://github.com/bitcoin/secp256k1/blob/master/src/secp256k1.c)
 - ~~Wallet Interchange Format [ref](https://en.bitcoin.it/wiki/WIF)~~
+- ~~Base58 encoding / decoding [ref](https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp)~~
 - ~~SHA-256 [ref](http://en.wikipedia.org/wiki/SHA-2)~~
+- Refactor RIPEMD-160 and SHA-256 to share boilerplate
+  - Read/write is the same
+  - Padding is the same
+  - Transform, constants, functions are different
 
 ## Signing program
 - TBD
@@ -32,6 +36,7 @@ First, we're going to implement a thin-client wallet.
 - Toshi: [https://github.com/coinbase/toshi](https://github.com/coinbase/toshi)
 - Bitcoin-ruby: [https://github.com/lian/bitcoin-ruby](https://github.com/lian/bitcoin-ruby)
 - Bitcoinjs: [https://github.com/bitcoinjs/bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)
+- Protocol: [https://en.bitcoin.it/wiki/Protocol_specification](https://en.bitcoin.it/wiki/Protocol_specification)
 
 # Articles
 - [Developer guide](https://bitcoin.org/en/developer-guide)
