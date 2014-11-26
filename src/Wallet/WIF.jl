@@ -41,10 +41,29 @@ function private2wif(pk::ASCIIString; which_net="80", compression="")
   return Coin.Util.Base.encode(parseint(BigInt, pk, 16), 58)
 end
 
-function wif2private(wif::ASCIIString)
+function wif2private(wif::ASCIIString; is_compressed=false)
+  pk = hex(Coin.Util.Base.decode(wif, 58))
+
+  # Drop the first two characters (network identifier) and last
+  # 8 (checksum)
+  pk = pk[3:end-8]
+
+  if is_compressed
+    pk = pk[1:end-2]
+  end
+
+  return pk
 end
 
 function wif_checksum(wif::ASCIIString)
+  result = hex(Coin.Util.Base.decode(wif, 58))
+
+  checksum = result[end - 8 + 1:end]
+
+  result = Coin.Crypto.SHA2.sha256(result[1:end - 8])
+  result = Coin.Crypto.SHA2.sha256(result)
+
+  return result[1:8] == checksum
 end
 
 end # module WIF

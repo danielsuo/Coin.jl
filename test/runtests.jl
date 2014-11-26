@@ -16,7 +16,7 @@ using Base.Test
 @test Coin.Crypto.SHA2.sha256("asdfghjkqwasdfghjkqwasdfghjkqwasdfghjkqwasdfghjkqwasdfghjkqw", is_hex=false) == "07a95e647687cf0e8cd3d0ca78c9cc9b120ab41497f5f3be912c6c3f1ecd3a31"
 
 # Testing hex strings
-@test Coin.Crypto.SHA2.sha256("800C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D") == "8147786c4d15106333bf278d71dadaf1079ef2d2440a4dde37d747ded5403592"
+@test Coin.Crypto.SHA2.sha256("800c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d") == "8147786c4d15106333bf278d71dadaf1079ef2d2440a4dde37d747ded5403592"
 @test Coin.Crypto.SHA2.sha256("8147786c4d15106333bf278d71dadaf1079ef2d2440a4dde37d747ded5403592") == "507a5b8dfed0fc6fe8801743720cedec06aa5c6fca72b07c49964492fb98a714"
 
 ##############################################################################
@@ -25,7 +25,7 @@ using Base.Test
 ##
 ##############################################################################
 
-base58data = parseint(BigInt, "800C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D507A5B8D", 16)
+base58data = parseint(BigInt, "800c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d507a5b8d", 16)
 
 # Base 58 encoding
 @test Coin.Util.Base.encode(base58data, 58) == "5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ"
@@ -40,5 +40,11 @@ base58data = parseint(BigInt, "800C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471
 ##############################################################################
 
 # Private key to WIF
-@test Coin.Wallet.WIF.private2wif("0C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D") == "5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ"
+@test Coin.Wallet.WIF.private2wif("0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d") == "5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ"
+
+# WIF to private key
+@test Coin.Wallet.WIF.wif2private("5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ") == "0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d"
+
+# WIF checksum
+@test Coin.Wallet.WIF.wif_checksum("5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ")
 
