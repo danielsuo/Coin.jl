@@ -37,6 +37,8 @@ function private2wif(pk::ASCIIString; which_net="80", compression="")
   checksum = hashed[1:8]
 
   pk = string(pk, checksum)
+
+  return Coin.Util.Base.encode(parseint(BigInt, pk, 16), 58)
 end
 
 function wif2private(wif::ASCIIString)
