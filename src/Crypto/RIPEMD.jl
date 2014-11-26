@@ -72,9 +72,6 @@ const s1 = [8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
             15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
             8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11]
 
-# Initial value (hexadecimal)
-const h = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
-
 ##############################################################################
 ##
 ## Initialize helper functions
@@ -162,7 +159,7 @@ function ripemd160(msg::ASCIIString; is_hex=true)
   # Append the bit '1' to the message.
   append!(msg, [0x80])
 
-  state = h
+  state = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
 
   # Divide up message into blocks of BLOCK_SIZE = 512 bits
   # and run through transformation
