@@ -8,5 +8,6 @@ module Crypto
 
 include("SHA2.jl")
 include("RIPEMD.jl")
+include("ECDSA.jl")
 
 end

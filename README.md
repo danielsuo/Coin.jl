@@ -6,32 +6,30 @@ Coin.jl
 A (self-educational, incomplete, and likely incorrect) library for working with Bitcoin written in Julia.
 
 # To Do
+
+## Wallet
 First, we're going to implement a thin-client wallet.
 
 - Should consider creating object types (e.g., addresses with metadata; wallets; etc)
 - Clean up tests to make more consistent
 
-## Public key distribution
-- ~~RIPEMD-160 [ref](https://github.com/bitcoin/bitcoin/blob/master/src/crypto/ripemd160.cpp)~~
-  - Clean up [ref](https://maemo.gitorious.org/maemo-pkg/python-crypto/source/8651b0eace17916fe7ba14923dbe4054f255ec2a:lib/Crypto/Hash/RIPEMD160.py)
-  - Fix bug for more than one chunk
-- Elliptic Curve DSA [ref](https://github.com/bitcoin/secp256k1/blob/master/src/secp256k1.c)
-- ~~Wallet Interchange Format [ref](https://en.bitcoin.it/wiki/WIF)~~
-- ~~Base58 encoding / decoding [ref](https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp)~~
-- ~~SHA-256 [ref](http://en.wikipedia.org/wiki/SHA-2)~~
-- Refactor RIPEMD-160 and SHA-256 to share boilerplate
-  - Read/write is the same
-  - Padding is the same
-  - Transform, constants, functions are different
+### Public key distribution
+- See [ref](https://github.com/danielsuo/Crypto.jl)
 
-## Signing program
+### Signing program
+- See [ref](https://github.com/danielsuo/Crypto.jl)
+
+### Network operations
 - TBD
 
-## Network operations
+### Utilities
 - TBD
 
-## Utilities
-- TBD
+## Vault and multisig
+- https://github.com/ciphrex/CoinVault
+
+## Mining
+- https://github.com/ckolivas/cgminer
 
 # Reference
 - Bitcoin: [https://github.com/bitcoin/bitcoin](https://github.com/bitcoin/bitcoin)
@@ -52,3 +50,5 @@ First, we're going to implement a thin-client wallet.
 - Dockerize
 - [TheBlueMatt tests](https://github.com/TheBlueMatt/test-scripts)
 - Add to Julia pkg repo and get badge
+- Split off Crypto package
+- Write Struct (a la Python's `struct` module) package?
