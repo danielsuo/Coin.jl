@@ -6,6 +6,7 @@ Coin.jl
 A (self-educational, incomplete, and likely incorrect) library for working with Bitcoin written in Julia.
 
 # To Do
+- Struct packing library?
 
 ## Wallet
 First, we're going to implement a thin-client wallet.
