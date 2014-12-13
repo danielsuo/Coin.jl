@@ -6,6 +6,7 @@ Coin.jl
 A (self-educational, incomplete, and likely incorrect) library for working with Bitcoin written in Julia.
 
 # To Do
+- https://en.bitcoin.it/wiki/Technical_background_of_Bitcoin_addresses
 
 ## Wallet
 First, we're going to implement a thin-client wallet.
