@@ -59,4 +59,3 @@ base58data = parseint(BigInt, "800c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471
 
 # WIF checksum
 @test Coin.Wallet.WIF.wif_checksum("5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ")
-

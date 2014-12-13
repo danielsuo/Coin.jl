@@ -1,12 +1,10 @@
-module Base
-
 ##############################################################################
 ##
-## Exported functions and modules
+## References
 ##
 ##############################################################################
 
-export encode, decode
+# - https://github.com/bitcoin/bitcoin/blob/master/src/base58.cpp
 
 ##############################################################################
 ##
@@ -29,7 +27,7 @@ const base58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 # but descriptive function names.
 # - n: integer we want to convert
 # - b: base we want to convert to
-function encode(n, b)
+function encode58(n; b = 58)
   # Require base to be 58 for now
   @assert b == 58
 
@@ -37,7 +35,7 @@ function encode(n, b)
 
   while n > 0
     n, rem = divrem(n, b)
-    output = string(base58[rem + 1],output)
+    output = string(base58[rem + 1], output)
   end
 
   return output
@@ -45,7 +43,7 @@ end
 
 # Decode from base 58 to integer
 # - n: base 58 number we want to convert
-function decode(n, b)
+function decode58(n; b = 58)
   # Require base to be 58 for now
   @assert b == 58
 
@@ -57,5 +55,3 @@ function decode(n, b)
 
   return result
 end
-
-end # module Base

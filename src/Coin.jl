@@ -1,20 +1,26 @@
 module Coin
 
+export 
+       # Keys.jl
+       generate_keys, 
+       get_public_key, 
+
+       # WIF.jl
+       private2wif, 
+       wif2private, 
+       wif_check_sum,
+
+       # Base58.jl
+       encode58,
+       decode58
+
 ##############################################################################
 ##
 ## Dependencies
 ##
 ##############################################################################
 
-# TODO: move crypto into a separate package?
-
-##############################################################################
-##
-## Exported methods and types
-##
-##############################################################################
-
-# export sha256
+using Crypto
 
 ##############################################################################
 ##
@@ -22,8 +28,10 @@ module Coin
 ##
 ##############################################################################
 
-include(joinpath("Crypto", "Crypto.jl"))
-include(joinpath("Wallet", "Wallet.jl"))
-include(joinpath("Util", "Util.jl"))
+include(joinpath("Util", "Base58.jl"))
+include(joinpath("Wallet", "Keys.jl"))
+include(joinpath("Wallet", "WIF.jl"))
+
+Crypto.init()
 
 end # module Coin

@@ -27,6 +27,7 @@ First, we're going to implement a thin-client wallet.
 
 ## Vault and multisig
 - https://github.com/ciphrex/CoinVault
+- BIP 32 HD Wallets [ref](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
 
 ## Mining
 - https://github.com/ckolivas/cgminer
