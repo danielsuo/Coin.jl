@@ -67,10 +67,10 @@
 # alert
 
 # Define the known magic values
-const magic_mainnet = "D9B4BEF9"
-const magic_testnet = "DAB5BFFA"
-const magic_testnet3 = "0709110B"
-const magic_namecoin = "FEB4BEF9"
+const magic_mainnet  = "d9b4bef9"
+const magic_testnet  = "dab5bffa"
+const magic_testnet3 = "0709110b"
+const magic_namecoin = "feb4bef9"
 
 const commands = ["version", "verack", "addr", "inv", "getdata", "notfound", 
                   "getblocks", "getheaders", "tx", "block", "headers", 
@@ -78,20 +78,23 @@ const commands = ["version", "verack", "addr", "inv", "getdata", "notfound",
                   "ping", "pong", "reject", "filterload", "filteradd", 
                   "filterclear", "merkleblock", "alert"]
 
-for command = commands
-  # e.g., command_tx = generate_command_bytes("tx")
-  eval(parse(string("command_", command, "=", "generate_command_bytes(\"", command, "\")")))
-end
-
 function generate_command_bytes(command_string)
-  rpad(join([hex(x, 2) for x in command_string.data]), 12, "0")
+  rpad(join([hex(x, 2) for x in command_string.data]), 24, "0")
 end
 
-function create_header(magic, command, data)
-  data = Crypto.digest("SHA256", Crypto.digest("SHA256", data))[1:8]
+function create_header(magic, command, payload)
+  payload_length = div(length(payload), 2) # if data is hex string
 
+  magic       = reverse_endian(magic)
+  command     = generate_command_bytes(command)
+  payload_length = reverse_endian(lpad(hex(payload_length), 8, "0"))
+  checksum    = Crypto.digest("SHA256", Crypto.digest("SHA256", payload, is_hex=true), is_hex=true)[1:8]
+
+  return string(magic, command, payload_length, checksum)
 end
 
-function create_transaction_message(magic, command, data)
-
+function create_transaction_message(payload; magic = magic_mainnet, tx_version = "1")
+  header  = create_header(magic, "tx", payload)
+  
+  version = reverse_endian(lpad(tx_version, 8, "0"))
 end

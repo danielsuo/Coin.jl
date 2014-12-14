@@ -14,8 +14,16 @@ export
        encode58,
        decode58,
 
+       # messages.jl,
+       create_header,
+
        # utils.jl
        reverse_endian
+
+export magic_mainnet,
+       magic_testnet,
+       magic_testnet3,
+       magic_namecoin
 
 ##############################################################################
 ##
