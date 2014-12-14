@@ -28,9 +28,11 @@ using Crypto
 ##
 ##############################################################################
 
-include(joinpath("Util", "Base58.jl"))
-include(joinpath("Wallet", "Keys.jl"))
-include(joinpath("Wallet", "WIF.jl"))
+include("base58.jl")
+include("keys.jl")
+include("wif.jl")
+include("transactions.jl")
+include("signatures.jl")
 
 Crypto.init()
 

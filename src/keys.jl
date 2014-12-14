@@ -12,7 +12,6 @@
 ##
 ##############################################################################
 
-# TODO: Compressed keys?
 function generate_keys(network_id = "00", version = "1")
   secret_key = join([hex(x) for x in Crypto.random(256)])
   public_key = get_public_key(secret_key, network_id = network_id, version = version)
