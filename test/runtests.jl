@@ -50,3 +50,12 @@ public_key = Coin.get_public_key(secret_key)
 
 # WIF checksum
 @test Coin.wif_check_sum("5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ")
+
+##############################################################################
+##
+## Utility tests
+##
+##############################################################################
+
+# Reverse endian of hex string
+@test Coin.reverse_endian("0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d") == "1daa729de12798e81b47be1fbfd386ec11ae7c0be52f0b6027a2c786a3fc280c"

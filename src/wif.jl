@@ -48,7 +48,7 @@ function wif_check_sum(wif)
 
   checksum = result[end - 8 + 1:end]
 
-  result = Crypto.digest("SHA256", result[1:end - 8], is_hex=true)
+  result = Crypto.digest("SHA256", result[1:end-8], is_hex=true)
   result = Crypto.digest("SHA256", result, is_hex=true)
 
   return result[1:8] == checksum
