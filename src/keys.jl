@@ -37,9 +37,7 @@ function get_public_key(secret_key; network_id = "00", version = "1")
   public_key = string(network_id, public_key)
 
   # Get checksum by performing SHA256 hash twice and taking first 4 bytes
-  checksum = Crypto.digest("SHA256", public_key, is_hex=true)
-  checksum = Crypto.digest("SHA256", checksum, is_hex=true)
-  checksum = checksum[1:8]
+  checksum = get_checksum(public_key, is_hex=true)
 
   # Add the 4 checksum bytes from stage 7 at the end of extended RIPEMD-160 
   # hash from stage 4. This is the 25-byte binary Bitcoin Address.

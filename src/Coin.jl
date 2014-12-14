@@ -18,7 +18,8 @@ export
        create_header,
 
        # utils.jl
-       reverse_endian
+       reverse_endian,
+       get_checksum
 
 export magic_mainnet,
        magic_testnet,

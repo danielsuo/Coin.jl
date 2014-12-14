@@ -66,11 +66,32 @@
 # merkleblock
 # alert
 
+type message
+  magic::Uint32             # Network identifier
+  command::Array{Uint8}     # Message command, right padded with \0 to 12 bytes
+  length::Uint32            # Payload length in bytes
+  checksum::Uint32          # First four bytes of sha256(sha256(payload))
+  payload::Array{Uint8}     # Payload data
+
+  function message(magic::Uint32, command::String, payload::String)
+    # Right pad the command string with \0 to create 12-byte array
+    append!(command.data, zeros(Char, 12 - length(command.data)))
+
+    # Calculate checksum
+    checksum = uint32(parseint(get_checksum(payload, is_hex=true), 16))
+
+    # Turn payload hex string into array of bytes
+    payload = [uint8(parseint(payload[2i-1:2i], 16)) for i in length(payload) / 2]
+
+    new(magic, command.data, length(payload), checksum, payload)
+  end
+end
+
 # Define the known magic values
-const magic_mainnet  = "d9b4bef9"
-const magic_testnet  = "dab5bffa"
-const magic_testnet3 = "0709110b"
-const magic_namecoin = "feb4bef9"
+const magic_mainnet  = 0xd9b4bef9
+const magic_testnet  = 0xdab5bffa
+const magic_testnet3 = 0x0709110b
+const magic_namecoin = 0xfeb4bef9
 
 const commands = ["version", "verack", "addr", "inv", "getdata", "notfound", 
                   "getblocks", "getheaders", "tx", "block", "headers", 
@@ -95,6 +116,6 @@ end
 
 function create_transaction_message(payload; magic = magic_mainnet, tx_version = "1")
   header  = create_header(magic, "tx", payload)
-  
+
   version = reverse_endian(lpad(tx_version, 8, "0"))
 end
