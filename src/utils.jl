@@ -1,5 +1,5 @@
 function reverse_endian(hex_string::String)
-  return join(reverse(hex_string_to_array(hex_string)))
+  return join([hex(x, 2) for x in reverse(hex_string_to_array(hex_string))])
 end
 
 function reverse_endian(hex_data::Number)
