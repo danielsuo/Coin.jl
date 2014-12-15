@@ -181,6 +181,38 @@ type Tx
   inputs::Array{Tx_Input}     # Array of transaction inputs
   outputs::Array{Tx_Output}   # Array of transaction outputs
   lock_time::Uint32           # Block num / time when tx is locked
+
+  function Tx(inputs::Array{Tx_Input}, outputs::Array{Tx_Output}; version = 0x00000001, lock_time = 0x00000000)
+    new(version, inputs, outputs, lock_time)
+  end
+end
+
+function convert(::Type{Array{Uint8}}, tx::Tx)
+  result = Array(Uint8, 0)
+
+  # Add version
+  append!(result, reverse(bytearray(tx.version)))
+
+  # Add number of inputs
+  append!(result, reverse(to_varint(length(tx.inputs))))
+
+  # Add inputs
+  for input in tx.inputs
+    append!(result, bytearray(input))
+  end
+
+  # Add number of outputs
+  append!(result, reverse(to_varint(length(tx.outputs))))
+
+  # Add outputs
+  for output in tx.outputs
+    append!(result, bytearray(output))
+  end
+
+  # Add lock_time
+  append!(result, reverse(bytearray(tx.lock_time)))
+
+  return result
 end
 
 # Define the known magic values
