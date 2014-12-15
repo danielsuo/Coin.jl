@@ -121,29 +121,31 @@ const magic_testnet  = 0xdab5bffa
 const magic_testnet3 = 0x0709110b
 const magic_namecoin = 0xfeb4bef9
 
-const commands = ["version", "verack", "addr", "inv", "getdata", "notfound", 
-                  "getblocks", "getheaders", "tx", "block", "headers", 
-                  "getaddr", "mempool", "checkorder", "submitorder", "reply", 
-                  "ping", "pong", "reject", "filterload", "filteradd", 
-                  "filterclear", "merkleblock", "alert"]
 
-function generate_command_bytes(command_string)
-  rpad(join([hex(x, 2) for x in command_string.data]), 24, "0")
-end
 
-function create_header(magic, command, payload)
-  payload_length = div(length(payload), 2) # if data is hex string
+# const commands = ["version", "verack", "addr", "inv", "getdata", "notfound", 
+#                   "getblocks", "getheaders", "tx", "block", "headers", 
+#                   "getaddr", "mempool", "checkorder", "submitorder", "reply", 
+#                   "ping", "pong", "reject", "filterload", "filteradd", 
+#                   "filterclear", "merkleblock", "alert"]
 
-  magic       = reverse_endian(magic)
-  command     = generate_command_bytes(command)
-  payload_length = reverse_endian(lpad(hex(payload_length), 8, "0"))
-  checksum    = Crypto.digest("SHA256", Crypto.digest("SHA256", payload, is_hex=true), is_hex=true)[1:8]
+# function generate_command_bytes(command_string)
+#   rpad(join([hex(x, 2) for x in command_string.data]), 24, "0")
+# end
 
-  return string(magic, command, payload_length, checksum)
-end
+# function create_header(magic, command, payload)
+#   payload_length = div(length(payload), 2) # if data is hex string
 
-function create_transaction_message(payload; magic = magic_mainnet, tx_version = "1")
-  header  = create_header(magic, "tx", payload)
+#   magic       = reverse_endian(magic)
+#   command     = generate_command_bytes(command)
+#   payload_length = reverse_endian(lpad(hex(payload_length), 8, "0"))
+#   checksum    = Crypto.digest("SHA256", Crypto.digest("SHA256", payload, is_hex=true), is_hex=true)[1:8]
 
-  version = reverse_endian(lpad(tx_version, 8, "0"))
-end
+#   return string(magic, command, payload_length, checksum)
+# end
+
+# function create_transaction_message(payload; magic = magic_mainnet, tx_version = "1")
+#   header  = create_header(magic, "tx", payload)
+
+#   version = reverse_endian(lpad(tx_version, 8, "0"))
+# end

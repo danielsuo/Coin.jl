@@ -16,6 +16,11 @@ export
 
        # messages.jl,
        create_header,
+       Message,
+       Tx,
+       Tx_Input,
+       OutPoint,
+       Tx_Output,
 
        # utils.jl
        reverse_endian,
