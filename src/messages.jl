@@ -66,25 +66,53 @@
 # merkleblock
 # alert
 
-type message
+type Message
   magic::Uint32             # Network identifier
   command::Array{Uint8}     # Message command, right padded with \0 to 12 bytes
   length::Uint32            # Payload length in bytes
   checksum::Uint32          # First four bytes of sha256(sha256(payload))
   payload::Array{Uint8}     # Payload data
 
-  function message(magic::Uint32, command::String, payload::String)
+  function Message(magic::Uint32, command::String, payload::String)
     # Right pad the command string with \0 to create 12-byte array
     append!(command.data, zeros(Char, 12 - length(command.data)))
 
     # Calculate checksum
-    checksum = uint32(parseint(get_checksum(payload, is_hex=true), 16))
+    checksum = uint32(parseint(get_checksum(payload, is_hex=true)[1:8], 16))
 
     # Turn payload hex string into array of bytes
     payload = [uint8(parseint(payload[2i-1:2i], 16)) for i in length(payload) / 2]
 
     new(magic, command.data, length(payload), checksum, payload)
   end
+end
+
+type Tx
+  version::Uint32             # Transaction data format version
+  num_inputs::Int             # Variable length integer: number of input tx
+  inputs::Array{Tx_Inputs}    # Array of transaction inputs
+  num_outputs::Int            # Variable length integer: number of output tx
+  outputs::Array{Tx_Outputs}  # Array of transaction outputs
+  lock_time::Uint32           # Block num / time when tx is locked
+end
+
+type Tx_Inputs
+  previous_output::OutPoint   # Previous output tx, as OutPoint structure
+  scriptSig_length::Int       # Variable length integer: length of scriptSig
+  scriptSig::Array{Int8}      # Script to confirm tx authorization
+  sequence::Uint32            # Transaction version as defined by the sender
+end
+
+type OutPoint
+  hash::Array{Uint8}          # 32-byte hash of the referenced transaction
+  index::Uint32               # Index of specific output in tx. 1st output is 0
+end
+
+type Tx_Outputs
+  # ERROR: does Uint64 exist on 32-bit OS?
+  value::Uint64               # Transaction value
+  scriptPubKey_length::Int    # Variable length integer: length of scriptPubKey
+  scriptPubKey::Array{Int8}   # Script to set up cond'ns to claim tx output
 end
 
 # Define the known magic values
