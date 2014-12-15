@@ -1,5 +1,7 @@
 import Base.convert
+import Base.string
 import Base.print
+import Base.println
 
 # Bitcoin's variable length integer
 # https://en.bitcoin.it/wiki/Protocol_specification#Variable_length_integer
@@ -85,6 +87,16 @@ function bytearray(x)
   convert(Array{Uint8}, x)
 end
 
-function print(array::Array{Uint8})
+function string(array::Array{Uint8})
   return string("[", join([string("0x", hex(x, 2)) for x in array], ", "), "]")
 end
+
+print(x::Array{Uint8}) = print(string(x))
+println(x::Array{Uint8}) = print(x); print()
+
+function string(x::Unsigned)
+  return string("0x", hex(x, div(sizeof(x), 2)))
+end
+
+print(x::Unsigned) = print(string(x))
+println(x::Unsigned) = print(x); print()

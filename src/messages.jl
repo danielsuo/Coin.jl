@@ -1,3 +1,6 @@
+import Base.convert
+import Base.print
+
 ##############################################################################
 ##
 ## References
@@ -111,8 +114,8 @@ end
 function convert(::Type{Array{Uint8}}, outpoint::OutPoint)
   result = Array(Uint8, 0)
 
-  append!(result, reverse(bytearray(output.index)))
-  append!(result, reverse(output.hash))
+  append!(result, reverse(bytearray(outpoint.index)))
+  append!(result, reverse(outpoint.hash))
 
   return result
 end
