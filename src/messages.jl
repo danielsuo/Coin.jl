@@ -81,9 +81,37 @@ type Message
     checksum = uint32(parseint(get_checksum(payload, is_hex=true)[1:8], 16))
 
     # Turn payload hex string into array of bytes
-    payload = [uint8(parseint(payload[2i-1:2i], 16)) for i in length(payload) / 2]
+    payload = hex_string_to_array(payload)
 
     new(magic, command.data, length(payload), checksum, payload)
+  end
+end
+
+type OutPoint
+  hash::Array{Uint8}          # 32-byte hash of the referenced transaction
+  index::Uint32               # Index of specific output in tx. 1st output is 0
+end
+
+type Tx_Input
+  previous_output::OutPoint   # Previous output tx, as OutPoint structure
+  scriptSig_length::Int       # Variable length integer: length of scriptSig
+  scriptSig::Array{Int8}      # Script to confirm tx authorization
+  sequence::Uint32            # Transaction version as defined by the sender
+end
+
+type Tx_Output
+  # ERROR: does Uint64 exist on 32-bit OS?
+  value::Uint64               # Transaction value
+  scriptPubKey_length::Int    # Variable length integer: length of scriptPubKey
+  scriptPubKey::Array{Uint8}   # Script to set up cond'ns to claim tx output
+
+  # value: transaction value in Satoshi
+  # scriptPubKey: script as hex string
+  function Tx_Output(value, scriptPubKey::String)
+    value = uint64(value)
+    scriptPubKey = hex_string_to_array(scriptPubKey)
+    scriptPubKey_length = length(scriptPubKey)
+    new(value, scriptPubKey_length, scriptPubKey)
   end
 end
 
@@ -94,28 +122,6 @@ type Tx
   num_outputs::Int            # Variable length integer: number of output tx
   outputs::Array{Tx_Output}  # Array of transaction outputs
   lock_time::Uint32           # Block num / time when tx is locked
-end
-
-type Tx_Input
-  previous_output::OutPoint   # Previous output tx, as OutPoint structure
-  scriptSig_length::Int       # Variable length integer: length of scriptSig
-  scriptSig::Array{Int8}      # Script to confirm tx authorization
-  sequence::Uint32            # Transaction version as defined by the sender
-end
-
-type OutPoint
-  hash::Array{Uint8}          # 32-byte hash of the referenced transaction
-  index::Uint32               # Index of specific output in tx. 1st output is 0
-end
-
-type Tx_Output
-  # ERROR: does Uint64 exist on 32-bit OS?
-  value::Uint64               # Transaction value
-  scriptPubKey_length::Int    # Variable length integer: length of scriptPubKey
-  scriptPubKey::Array{Int8}   # Script to set up cond'ns to claim tx output
-
-  ## value: transaction value in Satoshi
-  # function Tx_Outputs(value)
 end
 
 # Define the known magic values

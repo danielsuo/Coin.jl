@@ -24,7 +24,8 @@ export
 
        # utils.jl
        reverse_endian,
-       get_checksum
+       get_checksum,
+       hex_string_to_array
 
 export magic_mainnet,
        magic_testnet,

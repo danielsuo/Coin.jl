@@ -1,13 +1,5 @@
 function reverse_endian(hex_string::String)
-  hex_length = length(hex_string)
-
-  # Left pad with 0 to make hex_string even length
-  if hex_length % 2 != 0
-    hex_string = string("0", hex_string)
-    hex_length += 1
-  end
-
-  return join(reverse([hex_string[2i-1:2i] for i in 1:hex_length/2]))
+  return join(reverse(hex_string_to_array(hex_string)))
 end
 
 function reverse_endian(hex_data::Number)
@@ -19,10 +11,28 @@ function reverse_endian(hex_data::Number)
     hex_data >>>= 8
   end
 
+  bytes = sizeof(data_type)
+
+  result <<= int(floor(bytes - log(2, result) / 8)) * 8
+
   return result
 end
 
 function get_checksum(message::String; is_hex = false)
   create_digest(x) = Crypto.digest("SHA256", x, is_hex = is_hex)
   return create_digest(create_digest(message))[1:8]
+end
+
+function hex_string_to_array(hex_string::String)
+  hex_length = length(hex_string)
+
+  # Left pad with 0 to make hex_string even length
+  if hex_length % 2 != 0
+    hex_string = string("0", hex_string)
+    hex_length += 1
+  end
+
+  hex_length = div(hex_length, 2)
+
+  return [uint8(parseint(hex_string[2i-1:2i], 16)) for i in 1:hex_length]
 end
