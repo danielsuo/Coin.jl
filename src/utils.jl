@@ -2,7 +2,7 @@ function reverse_endian(hex_string::String)
   return join([hex(x, 2) for x in reverse(hex_string_to_array(hex_string))])
 end
 
-function reverse_endian(hex_data::Number)
+function reverse_endian(hex_data::Integer)
   data_type = typeof(hex_data)
   result = 0
 
@@ -11,9 +11,10 @@ function reverse_endian(hex_data::Number)
     hex_data >>>= 8
   end
 
-  bytes = sizeof(data_type)
-
-  result <<= int(floor(bytes - log(2, result) / 8)) * 8
+  if data_type != BigInt
+    bytes = sizeof(data_type)
+    result <<= int(floor(bytes - log(2, result) / 8)) * 8
+  end
 
   return result
 end
