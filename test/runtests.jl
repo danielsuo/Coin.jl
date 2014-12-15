@@ -68,5 +68,30 @@ payload = "0100000001484d40d45b9ea0d652fca8258ab7caa42541eb52975857f96fb50cd732c
 ##############################################################################
 
 # Reverse endian of hex string
+@test Coin.reverse_endian("") == ""
 @test Coin.reverse_endian("0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d") == "1daa729de12798e81b47be1fbfd386ec11ae7c0be52f0b6027a2c786a3fc280c"
+@test Coin.reverse_endian(0) == 0
+@test Coin.reverse_endian(0x22) == 0x22
+@test Coin.reverse_endian(0x333) == 0x3303
+@test Coin.reverse_endian(0x2234) == 0x3422
 @test Coin.reverse_endian(0xf9beb4d9) == 0xd9b4bef9
+@test Coin.reverse_endian(BigInt(19238471923847192837419283749128374912837491823742198374)) == 9830438508025927557749821611753759704769006686345681864
+# reverse_endian assumes that BigInt is at least 16 bytes and Int is system-dependent
+@test Coin.reverse_endian(BigInt(24)) == 31901471898837980949691369446728269824
+@test Coin.reverse_endian(23) == 1657324662872342528
+@test Coin.reverse_endian(-23) == -1585267068834414593
+
+# hex_string_to_array: empty string
+@test Coin.hex_string_to_array("") == []
+# hex_string_to_array: odd- and even-length strings
+@test Coin.hex_string_to_array("adfcef981") == [0x0a, 0xdf, 0xce, 0xf9, 0x81]
+@test Coin.hex_string_to_array("aadfcef981") == [0xaa, 0xdf, 0xce, 0xf9, 0x81]
+
+# Test VarInt conversion
+@test Coin.to_varint(1) == [0x01]
+@test Coin.to_varint(252) == [0xfc]
+@test Coin.to_varint(253) == [0xfd, 0x00, 0xfd]
+@test Coin.to_varint(0xffff) == [0xfd, 0xff, 0xff]
+@test Coin.to_varint(0x10000) == [0xfe, 0x00, 0x01, 0x00, 0x00]
+@test Coin.to_varint(0x100000000) == [0xff, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00]
+

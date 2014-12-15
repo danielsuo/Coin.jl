@@ -67,11 +67,11 @@
 # alert
 
 type Message
-  magic::Uint32             # Network identifier
-  command::Array{Uint8}     # Message command, right padded with \0 to 12 bytes
-  length::Uint32            # Payload length in bytes
-  checksum::Uint32          # First four bytes of sha256(sha256(payload))
-  payload::Array{Uint8}     # Payload data
+  magic::Uint32               # Network identifier
+  command::Array{Uint8}       # Message command, right padded with \0 to 12 bytes
+  length::Uint32              # Payload length in bytes
+  checksum::Uint32            # First four bytes of sha256(sha256(payload))
+  payload::Array{Uint8}       # Payload data
 
   function Message(magic::Uint32, command::String, payload::String)
     # Right pad the command string with \0 to create 12-byte array
@@ -103,7 +103,7 @@ type Tx_Output
   # ERROR: does Uint64 exist on 32-bit OS?
   value::Uint64               # Transaction value
   scriptPubKey_length::Int    # Variable length integer: length of scriptPubKey
-  scriptPubKey::Array{Uint8}   # Script to set up cond'ns to claim tx output
+  scriptPubKey::Array{Uint8}  # Script to set up cond'ns to claim tx output
 
   # value: transaction value in Satoshi
   # scriptPubKey: script as hex string
@@ -118,9 +118,9 @@ end
 type Tx
   version::Uint32             # Transaction data format version
   num_inputs::Int             # Variable length integer: number of input tx
-  inputs::Array{Tx_Input}    # Array of transaction inputs
+  inputs::Array{Tx_Input}     # Array of transaction inputs
   num_outputs::Int            # Variable length integer: number of output tx
-  outputs::Array{Tx_Output}  # Array of transaction outputs
+  outputs::Array{Tx_Output}   # Array of transaction outputs
   lock_time::Uint32           # Block num / time when tx is locked
 end
 
