@@ -91,14 +91,14 @@ type Message
 end
 
 type OutPoint
-  index::Uint32               # Index of specific output in tx. 1st output is 0
   hash::Array{Uint8}          # 32-byte hash of the referenced transaction
+  index::Uint32               # Index of specific output in tx. 1st output is 0 
 
-  function OutPoint(index::Integer, hash::String)
-    OutPoint(uint32(index), hex_string_to_array(hash))
+  function OutPoint(hash::String, index::Integer)
+    OutPoint(hex_string_to_array(hash), uint32(index))
   end
 
-  function OutPoint(index::Integer, hash::Array{Uint8})
+  function OutPoint(hash::Array{Uint8}, index::Integer)
     if index < 0
       error("OutPoint cannot have negative index")
     end
@@ -107,15 +107,15 @@ type OutPoint
       error("OutPoint requres 32-byte hash of referenced transaction")
     end
 
-    new(uint32(index), hash)
+    new(hash, uint32(index))
   end
 end
 
 function convert(::Type{Array{Uint8}}, outpoint::OutPoint)
   result = Array(Uint8, 0)
 
-  append!(result, reverse(bytearray(outpoint.index)))
   append!(result, reverse(outpoint.hash))
+  append!(result, reverse(bytearray(outpoint.index)))
 
   return result
 end
@@ -126,16 +126,24 @@ type Tx_Input
   scriptSig::Array{Uint8}               # Script to confirm tx authorization
   sequence::Uint32                      # Tx version as defined by the sender
 
-  function Tx_Input(previous_output::OutPoint, scriptSig::String; sequence = 0)
+  function Tx_Input(previous_output::OutPoint, scriptSig::String; sequence = 0xffffffff)
     scriptSig = hex_string_to_array(scriptSig)
-    Tx_Input(previous_output, scriptSig, sequence)
-  end
-  function Tx_Input(previous_output::OutPoint, scriptSig::Array{Uint8}; sequence = 0)
-    scriptSig_length = length(scriptSig)
-    sequence = uint32(sequence)
-    new(previous_output, scriptSig_length, scriptSig)
+    Tx_Input(previous_output, scriptSig, sequence = sequence)
   end
 
+  function Tx_Input(previous_output::OutPoint, scriptSig::Array{Uint8}; sequence = 0xffffffff)
+    scriptSig_length = length(scriptSig)
+    new(previous_output, scriptSig_length, scriptSig, uint32(sequence))
+  end
+end
+
+function convert(::Type{Array{Uint8}}, tx_in::Tx_Input)
+  result = Array(Uint8, 0)
+
+  append!(result, bytearray(tx_in.previous_output))
+  append!(result, reverse(to_varint(tx_in.scriptSig_length)))
+  append!(result, tx_in.scriptSig)
+  append!(result, reverse(bytearray(tx_in.sequence)))
 end
 
 type Tx_Output
