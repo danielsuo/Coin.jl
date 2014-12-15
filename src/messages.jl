@@ -90,13 +90,13 @@ end
 type Tx
   version::Uint32             # Transaction data format version
   num_inputs::Int             # Variable length integer: number of input tx
-  inputs::Array{Tx_Inputs}    # Array of transaction inputs
+  inputs::Array{Tx_Input}    # Array of transaction inputs
   num_outputs::Int            # Variable length integer: number of output tx
-  outputs::Array{Tx_Outputs}  # Array of transaction outputs
+  outputs::Array{Tx_Output}  # Array of transaction outputs
   lock_time::Uint32           # Block num / time when tx is locked
 end
 
-type Tx_Inputs
+type Tx_Input
   previous_output::OutPoint   # Previous output tx, as OutPoint structure
   scriptSig_length::Int       # Variable length integer: length of scriptSig
   scriptSig::Array{Int8}      # Script to confirm tx authorization
@@ -108,11 +108,14 @@ type OutPoint
   index::Uint32               # Index of specific output in tx. 1st output is 0
 end
 
-type Tx_Outputs
+type Tx_Output
   # ERROR: does Uint64 exist on 32-bit OS?
   value::Uint64               # Transaction value
   scriptPubKey_length::Int    # Variable length integer: length of scriptPubKey
   scriptPubKey::Array{Int8}   # Script to set up cond'ns to claim tx output
+
+  ## value: transaction value in Satoshi
+  # function Tx_Outputs(value)
 end
 
 # Define the known magic values
