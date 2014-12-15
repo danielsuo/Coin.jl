@@ -121,25 +121,34 @@ function convert(::Type{Array{Uint8}}, outpoint::OutPoint)
 end
 
 type Tx_Input
-  previous_output::OutPoint   # Previous output tx, as OutPoint structure
-  scriptSig_length::Int       # Variable length integer: length of scriptSig
-  scriptSig::Array{Int8}      # Script to confirm tx authorization
-  sequence::Uint32            # Transaction version as defined by the sender
+  previous_output::OutPoint             # Previous output tx, as OutPoint
+  scriptSig_length::Int                 # Variable length int: scriptSig len
+  scriptSig::Array{Uint8}               # Script to confirm tx authorization
+  sequence::Uint32                      # Tx version as defined by the sender
+
+  function Tx_Input(previous_output::OutPoint, scriptSig::String; sequence = 0)
+    scriptSig = hex_string_to_array(scriptSig)
+    Tx_Input(previous_output, scriptSig, sequence)
+  end
+  function Tx_Input(previous_output::OutPoint, scriptSig::Array{Uint8}; sequence = 0)
+    scriptSig_length = length(scriptSig)
+    sequence = uint32(sequence)
+    new(previous_output, scriptSig_length, scriptSig)
+  end
+
 end
 
 type Tx_Output
   # ERROR: does Uint64 exist on 32-bit OS?
   value::Uint64                         # Transaction value
-  scriptPubKey_length::Array{Uint8}     # Variable length int: scriptPubKey len
+  scriptPubKey_length::Int              # Variable length int: scriptPubKey len
   scriptPubKey::Array{Uint8}            # Script for claiming tx output
 
   # value: transaction value in Satoshi
   # scriptPubKey: script as hex string
   function Tx_Output(value, scriptPubKey::String)
-    value = uint64(value)
     scriptPubKey = hex_string_to_array(scriptPubKey)
-    scriptPubKey_length = to_varint(length(scriptPubKey))
-    new(value, scriptPubKey_length, scriptPubKey)
+    Tx_Output(value, scriptPubKey)
   end
 
   # value: transaction value in Satoshi
@@ -158,7 +167,7 @@ function convert(::Type{Array{Uint8}}, tx_out::Tx_Output)
   # endian byte array
   append!(result, reverse(bytearray(tx_out.value)))
 
-  append!(result, reverse(tx_out.scriptPubKey_length))
+  append!(result, reverse(to_varint(tx_out.scriptPubKey_length)))
 
   append!(result, tx_out.scriptPubKey)
 
