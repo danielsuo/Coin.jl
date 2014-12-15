@@ -1,4 +1,5 @@
 import Base.convert
+import Base.print
 
 # Bitcoin's variable length integer
 # https://en.bitcoin.it/wiki/Protocol_specification#Variable_length_integer
@@ -82,4 +83,8 @@ end
 # Must be defined for given types
 function bytearray(x)
   convert(Array{Uint8}, x)
+end
+
+function print(array::Array{Uint8})
+  return string("[", join([string("0x", hex(x, 2)) for x in array], ", "), "]")
 end

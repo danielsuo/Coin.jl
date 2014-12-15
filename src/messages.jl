@@ -88,8 +88,33 @@ type Message
 end
 
 type OutPoint
-  hash::Array{Uint8}          # 32-byte hash of the referenced transaction
   index::Uint32               # Index of specific output in tx. 1st output is 0
+  hash::Array{Uint8}          # 32-byte hash of the referenced transaction
+
+  function OutPoint(index::Integer, hash::String)
+    OutPoint(uint32(index), hex_string_to_array(hash))
+  end
+
+  function OutPoint(index::Integer, hash::Array{Uint8})
+    if index < 0
+      error("OutPoint cannot have negative index")
+    end
+
+    if length(hash) != 32
+      error("OutPoint requres 32-byte hash of referenced transaction")
+    end
+
+    new(uint32(index), hash)
+  end
+end
+
+function convert(::Type{Array{Uint8}}, outpoint::OutPoint)
+  result = Array(Uint8, 0)
+
+  append!(result, reverse(bytearray(output.index)))
+  append!(result, reverse(output.hash))
+
+  return result
 end
 
 type Tx_Input
@@ -113,6 +138,14 @@ type Tx_Output
     scriptPubKey_length = to_varint(length(scriptPubKey))
     new(value, scriptPubKey_length, scriptPubKey)
   end
+
+  # value: transaction value in Satoshi
+  # scriptPubKey: script as Array of Uint8
+  function Tx_Output(value, scriptPubKey::Array{Uint8})
+    value = uint64(value)
+    scriptPubKey_length = length(scriptPubKey)
+    new(value, scriptPubKey_length, scriptPubKey)
+  end
 end
 
 function convert(::Type{Array{Uint8}}, tx_out::Tx_Output)
@@ -120,7 +153,7 @@ function convert(::Type{Array{Uint8}}, tx_out::Tx_Output)
 
   # TODO: This is a really terrible way to get little
   # endian byte array
-  append!(result, reverse(convert(Array{Uint8}, tx_out.value)))
+  append!(result, reverse(bytearray(tx_out.value)))
 
   append!(result, reverse(tx_out.scriptPubKey_length))
 
