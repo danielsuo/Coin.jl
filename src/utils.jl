@@ -5,6 +5,9 @@ import Base.convert
 #
 # Only providing convenience functions to and from Array{Uint8} because varint
 # seems like its primarily a transport structure
+#
+# VarInt are created as big-endian here, but are sent little-endian as per
+# https://bitcoin.org/en/developer-reference#compactsize-unsigned-integers
 function to_varint(x::Integer)
   result = Array(Uint8, 0)
 
@@ -73,4 +76,10 @@ function hex_string_to_array(hex_string::String)
   hex_length = div(hex_length, 2)
 
   return [uint8(parseint(hex_string[2i-1:2i], 16)) for i in 1:hex_length]
+end
+
+# Convenience function for converting to Array{Uint8}
+# Must be defined for given types
+function bytearray(x)
+  convert(Array{Uint8}, x)
 end

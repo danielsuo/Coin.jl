@@ -26,7 +26,8 @@ export
        reverse_endian,
        get_checksum,
        hex_string_to_array,
-       to_varint
+       to_varint,
+       bytearray
 
 export magic_mainnet,
        magic_testnet,

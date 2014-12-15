@@ -61,6 +61,12 @@ public_key = Coin.get_public_key(secret_key)
 payload = "0100000001484d40d45b9ea0d652fca8258ab7caa42541eb52975857f96fb50cd732c8b481000000008a47304402202cb265bf10707bf49346c3515dd3d16fc454618c58ec0a0ff448a676c54ff71302206c6624d762a1fcef4618284ead8f08678ac05b13c84235f1654e6ad168233e8201410414e301b2328f17442c0b8310d787bf3d8a404cfbd0704f135b6ad4b2d3ee751310f981926e53a6e8c39bd7d3fefd576c543cce493cbac06388f2651d1aacbfcdffffffff0162640100000000001976a914c8e90996c7c6080ee06284600c684ed904d14c5c88ac00000000"
 # @test Coin.create_header(magic_mainnet, "tx", payload) == "f9beb4d9747800000000000000000000df000000ea0f5494"
 
+# Transaction output
+tx_out = Coin.Tx_Output(123, "abc")
+@test bytearray(tx_out) == Uint8[123,0,0,0,0,0,0,0,2,10,188]
+tx_out = Coin.Tx_Output(5000000, "76A9141AA0CD1CBEA6E7458A7ABAD512A9D9EA1AFB225E88AC")
+@test bytearray(tx_out) == Uint8[64,75,76,0,0,0,0,0,25,118,169,20,26,160,205,28,190,166,231,69,138,122,186,213,18,169,217,234,26,251,34,94,136,172]
+
 ##############################################################################
 ##
 ## Utility tests

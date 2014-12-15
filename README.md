@@ -13,6 +13,7 @@ First, we're going to implement a thin-client wallet.
 
 - Should consider creating object types (e.g., addresses with metadata; wallets; etc)
 - Clean up tests to make more consistent
+- Different nets (e.g., https://github.com/haskoin/haskoin/blob/master/prodnet/Network/Haskoin/Constants.hs)
 
 ### Public key distribution
 - See [ref](https://github.com/danielsuo/Crypto.jl)

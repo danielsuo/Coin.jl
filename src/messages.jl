@@ -101,18 +101,32 @@ end
 
 type Tx_Output
   # ERROR: does Uint64 exist on 32-bit OS?
-  value::Uint64               # Transaction value
-  scriptPubKey_length::Int    # Variable length integer: length of scriptPubKey
-  scriptPubKey::Array{Uint8}  # Script to set up cond'ns to claim tx output
+  value::Uint64                         # Transaction value
+  scriptPubKey_length::Array{Uint8}     # Variable length int: scriptPubKey len
+  scriptPubKey::Array{Uint8}            # Script for claiming tx output
 
   # value: transaction value in Satoshi
   # scriptPubKey: script as hex string
   function Tx_Output(value, scriptPubKey::String)
     value = uint64(value)
     scriptPubKey = hex_string_to_array(scriptPubKey)
-    scriptPubKey_length = length(scriptPubKey)
+    scriptPubKey_length = to_varint(length(scriptPubKey))
     new(value, scriptPubKey_length, scriptPubKey)
   end
+end
+
+function convert(::Type{Array{Uint8}}, tx_out::Tx_Output)
+  result = Array(Uint8, 0)
+
+  # TODO: This is a really terrible way to get little
+  # endian byte array
+  append!(result, reverse(convert(Array{Uint8}, tx_out.value)))
+
+  append!(result, reverse(tx_out.scriptPubKey_length))
+
+  append!(result, tx_out.scriptPubKey)
+
+  return result
 end
 
 type Tx
