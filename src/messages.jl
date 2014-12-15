@@ -72,8 +72,6 @@ import Base.print
 type Message
   magic::Uint32               # Network identifier
   command::Array{Uint8}       # Message command, right padded with \0 to 12 bytes
-  length::Uint32              # Payload length in bytes
-  checksum::Uint32            # First four bytes of sha256(sha256(payload))
   payload::Array{Uint8}       # Payload data
 
   function Message(magic::Uint32, command::String, payload::String)
@@ -86,7 +84,7 @@ type Message
     # Turn payload hex string into array of bytes
     payload = hex_string_to_array(payload)
 
-    new(magic, command.data, length(payload), checksum, payload)
+    new(magic, command.data, payload)
   end
 end
 
@@ -122,7 +120,6 @@ end
 
 type Tx_Input
   previous_output::OutPoint             # Previous output tx, as OutPoint
-  scriptSig_length::Int                 # Variable length int: scriptSig len
   scriptSig::Array{Uint8}               # Script to confirm tx authorization
   sequence::Uint32                      # Tx version as defined by the sender
 
@@ -132,8 +129,7 @@ type Tx_Input
   end
 
   function Tx_Input(previous_output::OutPoint, scriptSig::Array{Uint8}; sequence = 0xffffffff)
-    scriptSig_length = length(scriptSig)
-    new(previous_output, scriptSig_length, scriptSig, uint32(sequence))
+    new(previous_output, scriptSig, uint32(sequence))
   end
 end
 
@@ -141,7 +137,7 @@ function convert(::Type{Array{Uint8}}, tx_in::Tx_Input)
   result = Array(Uint8, 0)
 
   append!(result, bytearray(tx_in.previous_output))
-  append!(result, reverse(to_varint(tx_in.scriptSig_length)))
+  append!(result, reverse(to_varint(length(tx_in.scriptSig))))
   append!(result, tx_in.scriptSig)
   append!(result, reverse(bytearray(tx_in.sequence)))
 end
@@ -149,7 +145,6 @@ end
 type Tx_Output
   # ERROR: does Uint64 exist on 32-bit OS?
   value::Uint64                         # Transaction value
-  scriptPubKey_length::Int              # Variable length int: scriptPubKey len
   scriptPubKey::Array{Uint8}            # Script for claiming tx output
 
   # value: transaction value in Satoshi
@@ -163,8 +158,7 @@ type Tx_Output
   # scriptPubKey: script as Array of Uint8
   function Tx_Output(value, scriptPubKey::Array{Uint8})
     value = uint64(value)
-    scriptPubKey_length = length(scriptPubKey)
-    new(value, scriptPubKey_length, scriptPubKey)
+    new(value, scriptPubKey)
   end
 end
 
@@ -175,7 +169,7 @@ function convert(::Type{Array{Uint8}}, tx_out::Tx_Output)
   # endian byte array
   append!(result, reverse(bytearray(tx_out.value)))
 
-  append!(result, reverse(to_varint(tx_out.scriptPubKey_length)))
+  append!(result, reverse(to_varint(length(tx_out.scriptPubKey))))
 
   append!(result, tx_out.scriptPubKey)
 
@@ -184,9 +178,7 @@ end
 
 type Tx
   version::Uint32             # Transaction data format version
-  num_inputs::Int             # Variable length integer: number of input tx
   inputs::Array{Tx_Input}     # Array of transaction inputs
-  num_outputs::Int            # Variable length integer: number of output tx
   outputs::Array{Tx_Output}   # Array of transaction outputs
   lock_time::Uint32           # Block num / time when tx is locked
 end
@@ -196,8 +188,6 @@ const magic_mainnet  = 0xd9b4bef9
 const magic_testnet  = 0xdab5bffa
 const magic_testnet3 = 0x0709110b
 const magic_namecoin = 0xfeb4bef9
-
-
 
 # const commands = ["version", "verack", "addr", "inv", "getdata", "notfound", 
 #                   "getblocks", "getheaders", "tx", "block", "headers", 
