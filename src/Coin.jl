@@ -62,6 +62,7 @@ include("messages.jl")
 include("signatures.jl")
 include("op.jl")
 include("tx.jl")
+include("server.jl")
 
 Crypto.init()
 
