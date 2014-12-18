@@ -5,6 +5,7 @@
 ##############################################################################
 
 # - https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
+# - https://en.bitcoin.it/wiki/List_of_address_prefixes
 
 ##############################################################################
 ##
@@ -17,20 +18,19 @@ type Keys
   pub_key::Array{Uint8}
 end
 
-function generate_keys(network_id = 0x00, version = "1")
+function generate_keys(network_id = 0x00)
   priv_key = Crypto.random(256)
   pub_key = get_pub_key(priv_key, network_id = network_id, version = version)
 
   return (Crypto.oct2hex(priv_key), pub_key)
 end
 
-function get_pub_key(priv_key::String; network_id = 0x00, version = "1")
+function get_pub_key(priv_key::String; network_id = 0x00)
   get_pub_key(Crypto.hex2oct(priv_key),
-              network_id = network_id,
-              version = version)
+              network_id = network_id)
 end
 
-function get_pub_key(priv_key::Array{Uint8}; network_id = 0x00, version = "1")
+function get_pub_key(priv_key::Array{Uint8}; network_id = 0x00)
 
   # Generate corresponding public key generated with against ECDSA secp256k1
   # (65 bytes, 1 byte 0x04, 32 bytes corresponding to X coordinate, 32 bytes 
@@ -58,12 +58,7 @@ function get_pub_key(priv_key::Array{Uint8}; network_id = 0x00, version = "1")
   # Base58Check encoding. This is the most commonly used Bitcoin Address format
   # Reference: https://en.bitcoin.it/wiki/Base58Check_encoding
   # TODO: array to string to BigInt is really round-about
-  pub_key = parseint(BigInt, Crypto.oct2hex(pub_key), 16)
   pub_key = encode58(pub_key)
-
-  # Append address version byte in hex
-  # Reference: https://en.bitcoin.it/wiki/List_of_address_prefixes
-  pub_key = string(version, pub_key)
 
   return pub_key
 end
