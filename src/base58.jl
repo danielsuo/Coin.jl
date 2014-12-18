@@ -72,7 +72,7 @@ function decode58_to_array(n::String)
 
   # TODO: this isn't correct in the case of general # of 0s
   # Capture 2 leading 0s
-  if n[1:2] == repeat(base58[1], 2) # Get the zero element
+  if n[1] == base58[1] # Get the zero element
     result = [0x00, result]
   end
 

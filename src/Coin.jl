@@ -2,6 +2,7 @@ module Coin
 
 export 
        # keys.jl
+       Keys,
        generate_keys, 
        get_pub_key, 
 
@@ -23,6 +24,10 @@ export
        Tx_Input,
        OutPoint,
        Tx_Output,
+
+       # tx.jl
+       create_tx,
+       get_tx,
 
        # utils.jl
        reverse_endian,
