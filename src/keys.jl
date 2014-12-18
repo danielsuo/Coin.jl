@@ -12,46 +12,53 @@
 ##
 ##############################################################################
 
-function generate_keys(network_id = "00", version = "1")
-  secret_key = join([hex(x) for x in Crypto.random(256)])
-  public_key = get_public_key(secret_key, network_id = network_id, version = version)
+function generate_keys(network_id = 0x00, version = "1")
+  priv_key = Crypto.random(256)
+  pub_key = get_pub_key(priv_key, network_id = network_id, version = version)
 
-  return (secret_key, public_key)
+  return (Crypto.hex_array_to_string(priv_key), pub_key)
 end
 
-function get_public_key(secret_key; network_id = "00", version = "1")
+function get_pub_key(priv_key::String; network_id = 0x00, version = "1")
+  get_pub_key(Crypto.hex_string_to_array(priv_key),
+              network_id = network_id,
+              version = version)
+end
+
+function get_pub_key(priv_key::Array{Uint8}; network_id = 0x00, version = "1")
 
   # Generate corresponding public key generated with against ECDSA secp256k1
   # (65 bytes, 1 byte 0x04, 32 bytes corresponding to X coordinate, 32 bytes 
   # corresponding to Y coordinate)
-  public_key = Crypto.ec_public_key_create(secret_key)
+  pub_key = Crypto.ec_pub_key(priv_key)
 
   # Perform SHA-256 hashing on the public key
-  public_key = Crypto.digest("SHA256", public_key, is_hex=true)
+  pub_key = Crypto.digest("SHA256", pub_key)
 
   # Perform RIPEMD-160 hashing on the result of SHA-256
-  public_key = Crypto.digest("RIPEMD160", public_key, is_hex=true)
+  pub_key = Crypto.digest("RIPEMD160", pub_key)
 
   # Add version byte in front of RIPEMD-160 hash (0x00 for Main Network)
   # Reference: https://bitcoin.org/en/developer-reference#address-conversion
-  public_key = string(network_id, public_key)
+  pub_key = [bytearray(network_id), pub_key]
 
   # Get checksum by performing SHA256 hash twice and taking first 4 bytes
-  checksum = get_checksum(public_key, is_hex=true)
+  checksum = get_checksum(pub_key)
 
   # Add the 4 checksum bytes from stage 7 at the end of extended RIPEMD-160 
   # hash from stage 4. This is the 25-byte binary Bitcoin Address.
-  public_key = string(public_key, checksum)
+  append!(pub_key, checksum)
 
   # Convert the result from a byte string into a base58 string using 
   # Base58Check encoding. This is the most commonly used Bitcoin Address format
   # Reference: https://en.bitcoin.it/wiki/Base58Check_encoding
-  public_key = parseint(BigInt, public_key, 16)
-  public_key = encode58(public_key)
+  # TODO: array to string to BigInt is really round-about
+  pub_key = parseint(BigInt, Crypto.hex_array_to_string(pub_key), 16)
+  pub_key = encode58(pub_key)
 
   # Append address version byte in hex
   # Reference: https://en.bitcoin.it/wiki/List_of_address_prefixes
-  public_key = string(version, public_key)
+  pub_key = string(version, pub_key)
 
-  return public_key
+  return pub_key
 end

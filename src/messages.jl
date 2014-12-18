@@ -1,5 +1,4 @@
 import Base.convert
-import Base.print
 
 ##############################################################################
 ##
@@ -82,7 +81,7 @@ type Message
     checksum = uint32(parseint(get_checksum(payload, is_hex=true)[1:8], 16))
 
     # Turn payload hex string into array of bytes
-    payload = hex_string_to_array(payload)
+    payload = Crypto.hex_string_to_array(payload)
 
     new(magic, command.data, payload)
   end
@@ -93,7 +92,7 @@ type OutPoint
   index::Uint32               # Index of specific output in tx. 1st output is 0 
 
   function OutPoint(hash::String, index::Integer)
-    OutPoint(hex_string_to_array(hash), uint32(index))
+    OutPoint(Crypto.hex_string_to_array(hash), uint32(index))
   end
 
   function OutPoint(hash::Array{Uint8}, index::Integer)
@@ -124,7 +123,7 @@ type Tx_Input
   sequence::Uint32                      # Tx version as defined by the sender
 
   function Tx_Input(previous_output::OutPoint, scriptSig::String; sequence = 0xffffffff)
-    scriptSig = hex_string_to_array(scriptSig)
+    scriptSig = Crypto.hex_string_to_array(scriptSig)
     Tx_Input(previous_output, scriptSig, sequence = sequence)
   end
 
@@ -150,7 +149,7 @@ type Tx_Output
   # value: transaction value in Satoshi
   # scriptPubKey: script as hex string
   function Tx_Output(value, scriptPubKey::String)
-    scriptPubKey = hex_string_to_array(scriptPubKey)
+    scriptPubKey = Crypto.hex_string_to_array(scriptPubKey)
     Tx_Output(value, scriptPubKey)
   end
 

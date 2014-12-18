@@ -3,7 +3,7 @@ module Coin
 export 
        # keys.jl
        generate_keys, 
-       get_public_key, 
+       get_pub_key, 
 
        # wif.jl
        private2wif, 
@@ -25,7 +25,6 @@ export
        # utils.jl
        reverse_endian,
        get_checksum,
-       hex_string_to_array,
        to_varint,
        bytearray
 

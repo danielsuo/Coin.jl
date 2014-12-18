@@ -33,7 +33,7 @@ base58data = parseint(BigInt, "800c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471
 ##############################################################################
 
 secret_key = "18E14A7B6A307F426A94F8114701E7C8E774E7F9A47E2C2035DB29A206321725"
-public_key = get_public_key(secret_key)
+public_key = get_pub_key(secret_key)
 @test public_key == "16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM"
 
 ##############################################################################
@@ -103,12 +103,6 @@ tx = Tx([tx_in], [tx_out])
 @test reverse_endian(BigInt(24)) == 31901471898837980949691369446728269824
 @test reverse_endian(23) == 1657324662872342528
 @test reverse_endian(-23) == -1585267068834414593
-
-# hex_string_to_array: empty string
-@test hex_string_to_array("") == []
-# hex_string_to_array: odd- and even-length strings
-@test hex_string_to_array("adfcef981") == [0x0a, 0xdf, 0xce, 0xf9, 0x81]
-@test hex_string_to_array("aadfcef981") == [0xaa, 0xdf, 0xce, 0xf9, 0x81]
 
 # Test VarInt conversion
 @test to_varint(1) == [0x01]

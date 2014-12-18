@@ -15,6 +15,10 @@ First, we're going to implement a thin-client wallet.
 - Clean up tests to make more consistent
 - Different nets (e.g., https://github.com/haskoin/haskoin/blob/master/prodnet/Network/Haskoin/Constants.hs)
 
+- DER: https://bitcointa.lk/threads/quick-question-on-der-encoding-of-signature-pair-r-s.329293/#post-7058009
+- ECDSA signing: https://bitcointa.lk/threads/quick-question-on-der-encoding-of-signature-pair-r-s.329293/#post-7023595
+- Why der: http://bitcoin.stackexchange.com/questions/14415/why-use-der-encoding-for-signatures
+
 ### Public key distribution
 - See [ref](https://github.com/danielsuo/Crypto.jl)
 

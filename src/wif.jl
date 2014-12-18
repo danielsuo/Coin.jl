@@ -14,6 +14,7 @@
 
 # Convert private key to WIF.
 # TODO: turn keys into objects to hold metadata
+# TODO: Update to use byte arrays
 # - network_id: which network to use; 0x80 for mainnet, 0xef for testnet
 # - compression: 01 if private key corresponds to compressed public key
 function private2wif(private_key; network_id = "80", compression = "")
@@ -22,7 +23,7 @@ function private2wif(private_key; network_id = "80", compression = "")
   hashed = Crypto.digest("SHA256", private_key, is_hex=true)
   hashed = Crypto.digest("SHA256", hashed, is_hex=true)
 
-  checksum = hashed[1:8]
+  checksum = Crypto.hex_array_to_string(hashed[1:4])
 
   private_key = string(private_key, checksum)
 

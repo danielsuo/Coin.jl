@@ -52,33 +52,13 @@ function reverse_endian(hex_data::Integer)
   return result
 end
 
-# TODO: String manipulation is really not the best way
-function convert(::Type{Array{Uint8}}, x::Integer)
-  padding = 0
-  if typeof(x) != BigInt
-    padding = sizeof(x) * 2
-  end
-  hex_string = hex(x, padding)
-  return hex_string_to_array(hex_string)
-end
-
 function get_checksum(message::String; is_hex = false)
   create_digest(x) = Crypto.digest("SHA256", x, is_hex = is_hex)
-  return create_digest(create_digest(message))[1:8]
+  return Crypto.hex_array_to_string(create_digest(create_digest(message))[1:4])
 end
 
-function hex_string_to_array(hex_string::String)
-  hex_length = length(hex_string)
-
-  # Left pad with 0 to make hex_string even length
-  if hex_length % 2 != 0
-    hex_string = string("0", hex_string)
-    hex_length += 1
-  end
-
-  hex_length = div(hex_length, 2)
-
-  return [uint8(parseint(hex_string[2i-1:2i], 16)) for i in 1:hex_length]
+function get_checksum(message::Array{Uint8})
+  return Crypto.digest("SHA256", Crypto.digest("SHA256", message))[1:4]
 end
 
 # Convenience function for converting to Array{Uint8}
@@ -92,11 +72,11 @@ function string(array::Array{Uint8})
 end
 
 print(x::Array{Uint8}) = print(string(x))
-println(x::Array{Uint8}) = print(x); print()
+println(x::Array{Uint8}) = print(x); print("\n")
 
 function string(x::Unsigned)
   return string("0x", hex(x, div(sizeof(x), 2)))
 end
 
 print(x::Unsigned) = print(string(x))
-println(x::Unsigned) = print(x); print()
+println(x::Unsigned) = print(x); print("\n")
