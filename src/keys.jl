@@ -12,15 +12,20 @@
 ##
 ##############################################################################
 
+type Keys
+  priv_key::Array{Uint8}
+  pub_key::Array{Uint8}
+end
+
 function generate_keys(network_id = 0x00, version = "1")
   priv_key = Crypto.random(256)
   pub_key = get_pub_key(priv_key, network_id = network_id, version = version)
 
-  return (Crypto.hex_array_to_string(priv_key), pub_key)
+  return (Crypto.oct2hex(priv_key), pub_key)
 end
 
 function get_pub_key(priv_key::String; network_id = 0x00, version = "1")
-  get_pub_key(Crypto.hex_string_to_array(priv_key),
+  get_pub_key(Crypto.hex2oct(priv_key),
               network_id = network_id,
               version = version)
 end
@@ -40,7 +45,7 @@ function get_pub_key(priv_key::Array{Uint8}; network_id = 0x00, version = "1")
 
   # Add version byte in front of RIPEMD-160 hash (0x00 for Main Network)
   # Reference: https://bitcoin.org/en/developer-reference#address-conversion
-  pub_key = [bytearray(network_id), pub_key]
+  pub_key = [Crypto.int2oct(network_id), pub_key]
 
   # Get checksum by performing SHA256 hash twice and taking first 4 bytes
   checksum = get_checksum(pub_key)
@@ -53,7 +58,7 @@ function get_pub_key(priv_key::Array{Uint8}; network_id = 0x00, version = "1")
   # Base58Check encoding. This is the most commonly used Bitcoin Address format
   # Reference: https://en.bitcoin.it/wiki/Base58Check_encoding
   # TODO: array to string to BigInt is really round-about
-  pub_key = parseint(BigInt, Crypto.hex_array_to_string(pub_key), 16)
+  pub_key = parseint(BigInt, Crypto.oct2hex(pub_key), 16)
   pub_key = encode58(pub_key)
 
   # Append address version byte in hex

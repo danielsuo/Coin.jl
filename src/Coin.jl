@@ -5,14 +5,16 @@ export
        generate_keys, 
        get_pub_key, 
 
-       # wif.jl
+       # addresses.jl
        private2wif, 
        wif2private, 
        wif_check_sum,
+       pub2base58,
 
        # base58.jl
        encode58,
        decode58,
+       decode58_to_array,
 
        # messages.jl,
        create_header,
@@ -50,9 +52,11 @@ using Crypto
 include("utils.jl")
 include("base58.jl")
 include("keys.jl")
-include("wif.jl")
+include("addresses.jl")
 include("messages.jl")
 include("signatures.jl")
+include("op.jl")
+include("tx.jl")
 
 Crypto.init()
 

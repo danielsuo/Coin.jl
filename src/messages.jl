@@ -68,6 +68,12 @@ import Base.convert
 # merkleblock
 # alert
 
+# Define the known magic values
+const magic_mainnet  = 0xd9b4bef9
+const magic_testnet  = 0xdab5bffa
+const magic_testnet3 = 0x0709110b
+const magic_namecoin = 0xfeb4bef9
+
 type Message
   magic::Uint32               # Network identifier
   command::Array{Uint8}       # Message command, right padded with \0 to 12 bytes
@@ -81,7 +87,7 @@ type Message
     checksum = uint32(parseint(get_checksum(payload, is_hex=true)[1:8], 16))
 
     # Turn payload hex string into array of bytes
-    payload = Crypto.hex_string_to_array(payload)
+    payload = Crypto.hex2oct(payload)
 
     new(magic, command.data, payload)
   end
@@ -92,7 +98,7 @@ type OutPoint
   index::Uint32               # Index of specific output in tx. 1st output is 0 
 
   function OutPoint(hash::String, index::Integer)
-    OutPoint(Crypto.hex_string_to_array(hash), uint32(index))
+    OutPoint(Crypto.hex2oct(hash), uint32(index))
   end
 
   function OutPoint(hash::Array{Uint8}, index::Integer)
@@ -112,7 +118,7 @@ function convert(::Type{Array{Uint8}}, outpoint::OutPoint)
   result = Array(Uint8, 0)
 
   append!(result, reverse(outpoint.hash))
-  append!(result, reverse(bytearray(outpoint.index)))
+  append!(result, reverse(Crypto.int2oct(outpoint.index)))
 
   return result
 end
@@ -123,7 +129,7 @@ type Tx_Input
   sequence::Uint32                      # Tx version as defined by the sender
 
   function Tx_Input(previous_output::OutPoint, scriptSig::String; sequence = 0xffffffff)
-    scriptSig = Crypto.hex_string_to_array(scriptSig)
+    scriptSig = Crypto.hex2oct(scriptSig)
     Tx_Input(previous_output, scriptSig, sequence = sequence)
   end
 
@@ -138,7 +144,7 @@ function convert(::Type{Array{Uint8}}, tx_in::Tx_Input)
   append!(result, bytearray(tx_in.previous_output))
   append!(result, reverse(to_varint(length(tx_in.scriptSig))))
   append!(result, tx_in.scriptSig)
-  append!(result, reverse(bytearray(tx_in.sequence)))
+  append!(result, reverse(Crypto.int2oct(tx_in.sequence)))
 end
 
 type Tx_Output
@@ -149,7 +155,7 @@ type Tx_Output
   # value: transaction value in Satoshi
   # scriptPubKey: script as hex string
   function Tx_Output(value, scriptPubKey::String)
-    scriptPubKey = Crypto.hex_string_to_array(scriptPubKey)
+    scriptPubKey = Crypto.hex2oct(scriptPubKey)
     Tx_Output(value, scriptPubKey)
   end
 
@@ -166,7 +172,7 @@ function convert(::Type{Array{Uint8}}, tx_out::Tx_Output)
 
   # TODO: This is a really terrible way to get little
   # endian byte array
-  append!(result, reverse(bytearray(tx_out.value)))
+  append!(result, reverse(Crypto.int2oct(tx_out.value)))
 
   append!(result, reverse(to_varint(length(tx_out.scriptPubKey))))
 
@@ -190,7 +196,7 @@ function convert(::Type{Array{Uint8}}, tx::Tx)
   result = Array(Uint8, 0)
 
   # Add version
-  append!(result, reverse(bytearray(tx.version)))
+  append!(result, reverse(Crypto.int2oct(tx.version)))
 
   # Add number of inputs
   append!(result, reverse(to_varint(length(tx.inputs))))
@@ -209,16 +215,10 @@ function convert(::Type{Array{Uint8}}, tx::Tx)
   end
 
   # Add lock_time
-  append!(result, reverse(bytearray(tx.lock_time)))
+  append!(result, reverse(Crypto.int2oct(tx.lock_time)))
 
   return result
 end
-
-# Define the known magic values
-const magic_mainnet  = 0xd9b4bef9
-const magic_testnet  = 0xdab5bffa
-const magic_testnet3 = 0x0709110b
-const magic_namecoin = 0xfeb4bef9
 
 # const commands = ["version", "verack", "addr", "inv", "getdata", "notfound", 
 #                   "getblocks", "getheaders", "tx", "block", "headers", 

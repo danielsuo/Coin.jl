@@ -17,23 +17,23 @@ function to_varint(x::Integer)
   if x < 0
     error("Negative values for VarInt undefined.")
   elseif x < 0xfd
-    append!(result, convert(Array{Uint8}, uint8(x)))
+    append!(result, Crypto.int2oct(uint8(x)))
   elseif x <= 0xffff
     append!(result, [0xfd])
-    append!(result, convert(Array{Uint8}, uint16(x)))
+    append!(result, Crypto.int2oct(uint16(x)))
   elseif x <= 0xffffffff
     append!(result, [0xfe])
-    append!(result, convert(Array{Uint8}, uint32(x)))
+    append!(result, Crypto.int2oct(uint32(x)))
   else
     append!(result, [0xff])
-    append!(result, convert(Array{Uint8}, uint64(x)))
+    append!(result, Crypto.int2oct(uint64(x)))
   end
 
   return result
 end
 
 function reverse_endian(hex_string::String)
-  return join([hex(x, 2) for x in reverse(hex_string_to_array(hex_string))])
+  return join([hex(x, 2) for x in reverse(hex2oct(hex_string))])
 end
 
 function reverse_endian(hex_data::Integer)
@@ -53,8 +53,8 @@ function reverse_endian(hex_data::Integer)
 end
 
 function get_checksum(message::String; is_hex = false)
-  create_digest(x) = Crypto.digest("SHA256", x, is_hex = is_hex)
-  return Crypto.hex_array_to_string(create_digest(create_digest(message))[1:4])
+  message = Crypto.digest("SHA256", Crypto.digest("SHA256", message, is_hex = true))
+  return Crypto.oct2hex(message[1:4])
 end
 
 function get_checksum(message::Array{Uint8})

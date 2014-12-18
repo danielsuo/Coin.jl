@@ -21,9 +21,9 @@ function private2wif(private_key; network_id = "80", compression = "")
   private_key = string(network_id, private_key, compression)
 
   hashed = Crypto.digest("SHA256", private_key, is_hex=true)
-  hashed = Crypto.digest("SHA256", hashed, is_hex=true)
+  hashed = Crypto.digest("SHA256", hashed)
 
-  checksum = Crypto.hex_array_to_string(hashed[1:4])
+  checksum = Crypto.oct2hex(hashed[1:4])
 
   private_key = string(private_key, checksum)
 
@@ -47,4 +47,42 @@ end
 function wif_check_sum(wif)
   result = hex(decode58(wif))
   return get_checksum(result[1:end-8], is_hex=true) == result[end-8+1:end]
+end
+
+function pub2base58(pub_key::String; network_id = "00")
+  pub_key_length = div(length(pub_key), 2)
+
+  # If public key is elliptic curve coordinate, hash with SHA-256
+  if pub_key_length == 65
+    pub_key = Crypto.digest("SHA256", pub_key, is_hex = true)
+    pub_key = Crypto.oct2hex(pub_key)
+    pub_key_length = div(length(pub_key), 2)
+  end
+
+  # If public key has been SHA-256 hashed, hash with RIPEMD-160
+  if pub_key_length == 32
+    pub_key = Crypto.digest("RIPEMD160", pub_key, is_hex = true)
+    pub_key = Crypto.oct2hex(pub_key)
+    pub_key_length = div(length(pub_key), 2)
+  end
+
+  # If public key has been RIPEMD-160 hashed, add network id
+  if pub_key_length == 20
+    pub_key = string(network_id, pub_key)
+    pub_key_length = div(length(pub_key), 2)
+  end
+
+  # If public key has network id added, add checksum
+  if pub_key_length == 21
+    checksum = get_checksum(pub_key, is_hex = true)
+    pub_key = string(pub_key, checksum)
+    pub_key_length = div(length(pub_key), 2)
+  end
+
+  # If public key has checksum added
+  if pub_key_length == 25
+    pub_key = encode58(Crypto.hex2oct(pub_key))
+  end
+
+  return pub_key
 end
