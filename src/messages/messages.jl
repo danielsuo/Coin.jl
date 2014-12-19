@@ -74,6 +74,9 @@ import Base.convert
 #                   "ping", "pong", "reject", "filterload", "filteradd", 
 #                   "filterclear", "merkleblock", "alert"]
 
+include("tx.jl")
+include("version.jl")
+
 # Define the known magic values
 const magic_mainnet  = 0xd9b4bef9
 const magic_testnet  = 0xdab5bffa

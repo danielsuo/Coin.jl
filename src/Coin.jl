@@ -17,23 +17,38 @@ export
        decode58,
        decode58_to_array,
 
-       # messages.jl,
-       create_header,
-       Message,
-       Tx,
-       Tx_Input,
-       OutPoint,
-       Tx_Output,
-
-       # tx.jl
-       create_tx,
-       get_tx,
-
        # utils.jl
        reverse_endian,
        get_checksum,
        to_varint,
+       to_varstring,
        bytearray
+
+export BITCOIN_PROTOCOL_VERSION,
+       SERVICES_NODE_NETWORK
+
+##############################################################################
+##
+## Message exports
+##
+##############################################################################
+
+export
+       # messages.jl,
+       Message,
+       create_header,
+       
+       # tx.jl
+       Tx,
+       Tx_Input,
+       OutPoint,
+       Tx_Output,
+       create_tx,
+       get_tx,
+
+       # version.jl
+       NetworkAddress,
+       Version
 
 export magic_mainnet,
        magic_testnet,
@@ -58,12 +73,16 @@ include("utils.jl")
 include("base58.jl")
 include("keys.jl")
 include("addresses.jl")
-include("messages.jl")
+include("messages/messages.jl")
 include("signatures.jl")
 include("op.jl")
-include("tx.jl")
 include("server.jl")
 
 Crypto.init()
+
+# Version 0.9.3
+const BITCOIN_PROTOCOL_VERSION = 93000
+
+const SERVICES_NODE_NETWORK = 1
 
 end # module Coin

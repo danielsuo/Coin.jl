@@ -8,6 +8,8 @@
 # - Add negative WIF tests (e.g., invalid compression bits)
 # - Test different key types (e.g., compressed)
 # - Add negative key tests
+# - add test for leading 0
+# - to_varstring
 
 using Coin
 using Base.Test
@@ -25,8 +27,6 @@ base58data = parseint(BigInt, "800c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471
 
 # Base 58 decoding
 @test decode58("5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ") == base58data
-
-# TODO: add test for leading 0
 
 ##############################################################################
 ##

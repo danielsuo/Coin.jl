@@ -7,9 +7,10 @@ A (self-educational, incomplete, and likely incorrect) library for working with 
 
 # To Do
 - https://en.bitcoin.it/wiki/Technical_background_of_Bitcoin_addresses
-# TODO: multiple inputs
-# TODO: convenience functions
-# TODO: clean up and documentation
+- TODO: multiple inputs
+- TODO: convenience functions
+- TODO: clean up and documentation
+- TODO: update versioning info automatically (e.g., useragent, changelog, etc)
 
 ## Wallet
 First, we're going to implement a thin-client wallet.

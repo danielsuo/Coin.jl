@@ -32,6 +32,12 @@ function to_varint(x::Integer)
   return result
 end
 
+# Bitcoin's variable length string
+# https://en.bitcoin.it/wiki/Protocol_specification#Variable_length_string
+function to_varstring(x::String)
+  return [to_varint(length(x)), x.data]
+end
+
 function reverse_endian(hex_string::String)
   return join([hex(x, 2) for x in reverse(hex2oct(hex_string))])
 end
