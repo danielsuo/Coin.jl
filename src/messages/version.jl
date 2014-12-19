@@ -5,7 +5,7 @@ type NetworkAddress
   port::Uint16
 
   # Assume addresses come in the form IP:Port
-  function NetworkAddress(address::String; services = SERVICES_NODE_NETWORK
+  function NetworkAddress(address::String; services = SERVICES_NODE_NETWORK)
 
     # TODO: more rigorous IP address checking
     pieces = split(address, ":")
@@ -61,14 +61,14 @@ type Version
     addr_recv = NetworkAddress(addr_recv, services = services)
     addr_from = NetworkAddress(addr_from, services = services)
 
-    new(version      = uint32(version), 
-        services     = uint64(services), 
-        timestamp    = uint64(timestamp), 
-        addr_recv    = addr_recv, 
-        addr_from    = addr_from, 
-        nonce        = nonce, 
-        user_agent   = user_agent, 
-        start_height = uint32(start_height), 
-        relay        = relay)
+    new(uint32(version), 
+        uint64(services), 
+        uint64(timestamp), 
+        addr_recv, 
+        addr_from, 
+        nonce, 
+        user_agent, 
+        uint32(start_height), 
+        relay)
   end
 end
